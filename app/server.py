@@ -60,13 +60,13 @@ class ServerProtocol(asyncio.Protocol):
         print(f"Клиент {self.login} вышел")
 
     def send_message(self, content: str):
-        message = f"{self.login}: {content}\n".replace("\t","")
-        for users in self.server.clients:
-            users.transport.write(message.encode())
+        if content:
+            message = f"{self.login}: {content}\n"
+            for users in self.server.clients:
+                users.transport.write(message.encode())
 
     def send_history(self, content: str = None):
-        content = f"{content}".replace("\r\n", "")
-        if not content and not content == None and not content.startswith("login:"):
+        if content and not content == None and not content.startswith("login:"):
             self.history_message.append(f"{self.login}: {content}\n")
         return self.history_message
 
